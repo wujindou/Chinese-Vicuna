@@ -178,6 +178,7 @@ with open('/content/bloom/data/preliminary_test.csv','r',encoding='utf-8') as li
         input_str = data[1]
         idx = data[0]
         res = evaluate(instruction,input_str)
+        res = ''.join([v for v in res])
         if int(idx)>=5:continue
         print(str(idx)+','+res)
 #             if int(idx)%50==0:
