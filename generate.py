@@ -114,9 +114,9 @@ if torch.__version__ >= "2" and sys.platform != "win32":
 
 def evaluate(
     input,
-    temperature=0.1,
-    top_p=0.75,
-    top_k=40,
+#     temperature=0.1,
+#     top_p=0.75,
+#     top_k=40,
     num_beams=4,
     max_new_tokens=128,
     min_new_tokens=1,
@@ -127,9 +127,9 @@ def evaluate(
     inputs = tokenizer(prompt, return_tensors="pt")
     input_ids = inputs["input_ids"].to(device)
     generation_config = GenerationConfig(
-        temperature=temperature,
-        top_p=top_p,
-        top_k=top_k,
+#         temperature=temperature,
+#         top_p=top_p,
+#         top_k=top_k,
         num_beams=num_beams,
         bos_token_id=1,
         eos_token_id=2,
@@ -169,33 +169,52 @@ def evaluate(
             print(output)
             yield output
 
+            
+instruction='请根据下面的疾病检查报告,生成对应的摘要'
+answers = []
+with open('./data/preliminary_test.csv','r',encoding='utf-8') as lines:
+    for line in lines:
+        data = line.strip().split(',')
+        input_str = data[1]
+        idx = data[0]
+        res = evaluate(instruction,input_str)
+        if int(idx)>=5:continue
+        print(str(idx)+','+res)
+#             if int(idx)%50==0:
+#                 print('process '+str(idx))
+        answers.append(str(idx)+','+res.replace('\n','')+'\n')
+writer = open('./data/test_result_bloom.txt','a+',encoding='utf-8')
+for ans in answers:
+    writer.write(ans)
+writer.close()
 
-gr.Interface(
-    fn=evaluate,
-    inputs=[
-        gr.components.Textbox(
-            lines=2, label="Input", placeholder="Tell me about alpacas."
-        ),
-        gr.components.Slider(minimum=0, maximum=1, value=0.1, label="Temperature"),
-        gr.components.Slider(minimum=0, maximum=1, value=0.75, label="Top p"),
-        gr.components.Slider(minimum=0, maximum=100, step=1, value=40, label="Top k"),
-        gr.components.Slider(minimum=1, maximum=10, step=1, value=4, label="Beams Number"),
-        gr.components.Slider(
-            minimum=1, maximum=2000, step=1, value=256, label="Max New Tokens"
-        ),
-        gr.components.Slider(
-            minimum=1, maximum=100, step=1, value=1, label="Min New Tokens"
-        ),
-        gr.components.Slider(
-            minimum=0.1, maximum=10.0, step=0.1, value=2.0, label="Repetition Penalty"
-        ),
-    ],
-    outputs=[
-        gr.inputs.Textbox(
-            lines=25,
-            label="Output",
-        )
-    ],
-    title="Chinese-Vicuna 中文小羊驼",
-    description="中文小羊驼由各种高质量的开源instruction数据集，结合Alpaca-lora的代码训练而来，模型基于开源的llama7B，主要贡献是对应的lora模型。由于代码训练资源要求较小，希望为llama中文lora社区做一份贡献。",
-).queue().launch(share=True)
+
+# gr.Interface(
+#     fn=evaluate,
+#     inputs=[
+#         gr.components.Textbox(
+#             lines=2, label="Input", placeholder="Tell me about alpacas."
+#         ),
+#         gr.components.Slider(minimum=0, maximum=1, value=0.1, label="Temperature"),
+#         gr.components.Slider(minimum=0, maximum=1, value=0.75, label="Top p"),
+#         gr.components.Slider(minimum=0, maximum=100, step=1, value=40, label="Top k"),
+#         gr.components.Slider(minimum=1, maximum=10, step=1, value=4, label="Beams Number"),
+#         gr.components.Slider(
+#             minimum=1, maximum=2000, step=1, value=256, label="Max New Tokens"
+#         ),
+#         gr.components.Slider(
+#             minimum=1, maximum=100, step=1, value=1, label="Min New Tokens"
+#         ),
+#         gr.components.Slider(
+#             minimum=0.1, maximum=10.0, step=0.1, value=2.0, label="Repetition Penalty"
+#         ),
+#     ],
+#     outputs=[
+#         gr.inputs.Textbox(
+#             lines=25,
+#             label="Output",
+#         )
+#     ],
+#     title="Chinese-Vicuna 中文小羊驼",
+#     description="中文小羊驼由各种高质量的开源instruction数据集，结合Alpaca-lora的代码训练而来，模型基于开源的llama7B，主要贡献是对应的lora模型。由于代码训练资源要求较小，希望为llama中文lora社区做一份贡献。",
+# ).queue().launch(share=True)
