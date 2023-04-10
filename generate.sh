@@ -6,7 +6,7 @@ TYPE_WRITER=1 # whether output streamly
 # then
 # cp ./config-sample/adapter_config.json $LORA_PATH
 # fi
-python ./generate.py \
+python ./Chinese-Vicuna/generate.py \
     --model_path $BASE_MODEL \
     --lora_path $LORA_PATH \
     --use_local $USE_LOCAL \
