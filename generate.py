@@ -172,7 +172,7 @@ def evaluate(
             
 instruction='请根据下面的疾病检查报告,生成对应的摘要'
 answers = []
-with open('/content/bloom/data/preliminary_test.csv','r',encoding='utf-8') as lines:
+with open('/kaggle/working/bloom/data/preliminary_test.csv','r',encoding='utf-8') as lines:
     for line in lines:
         data = line.strip().split(',')
         input_str = data[1]
