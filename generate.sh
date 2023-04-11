@@ -1,5 +1,5 @@
 BASE_MODEL="decapoda-research/llama-7b-hf"
-LORA_PATH="./lora-Vicuna/" #"./lora-Vicuna/checkpoint-final"
+LORA_PATH="/kaggle/input/pretrained-lora-weight" #"./lora-Vicuna/checkpoint-final"
 USE_LOCAL=0 # 1: use local model, 0: use huggingface model
 TYPE_WRITER=0 # whether output streamly
 # if [[ USE_LOCAL -eq 1 ]]
